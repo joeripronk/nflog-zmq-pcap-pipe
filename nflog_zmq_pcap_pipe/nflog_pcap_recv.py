@@ -6,7 +6,7 @@ def main():
 	import itertools as it, operator as op, functools as ft
 	from time import sleep
 	from collections import deque
-	import os, logging, pcap, metrics, shaper
+	import os, logging,dpkt, pcap, metrics, shaper
 
 	import argparse
 	parser = argparse.ArgumentParser(
@@ -105,7 +105,7 @@ def main():
 						buff_len = 0
 						if bif: bif_tmp = list()
 						for pkt in buff:
-							pkt_len = pcap_dst.send(pkt)
+							pkt_len = pcap_dst.send(dpkt.ethernet.Ethernet(pkt))
 							buff_len += pkt_len
 							if bif: bif_tmp.append((pkt_len, pkt))
 					except IOError: break

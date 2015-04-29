@@ -43,9 +43,10 @@ setup(
 	install_requires = ['pyzmq'],
 
 	packages = find_packages(),
-
-	entry_points = {
-		'console_scripts': [
-			'{} = nflog_zmq_pcap_pipe.{}:main'.format(name, name.replace('-', '_'))
-			for name in [ 'nflog-zmq-send', 'nflog-zmq-compress',
-				'nflog-zmq-decompress', 'nflog-pcap-recv', 'nflog-pcap-query' ] ] } )
+    entry_points = {'console_scripts': [
+      'nflog-zmq-send = nflog_zmq_pcap_pipe.nflog_zmq_send:main',
+      'nflog-pcap-recv = nflog_zmq_pcap_pipe.nflog_pcap_recv:main',
+      'nflog-zmq-compress = nflog_zmq_pcap_pipe.nflog_zmq_compress:main',
+      'nflog-zmq-decompress = nflog_zmq_pcap_pipe.nflog_zmq_decompress:main',
+      'nflog-pcap-query = nflog_zmq_pcap_pipe.nflog_pcap_query:main']
+      } )
