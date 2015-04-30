@@ -33,7 +33,7 @@ def statsd_from_optz(optz):
       try: sampling, interval = sampling
       except TypeError: interval = None
     except:
-      parser.error('Invalid value for --statsd-sampling: {}'.format(optz.statsd_sampling))
+      parser.error('Invalid value for --statsd-sampling: {0}'.format(optz.statsd_sampling))
     statsd_obj = statsd( *statsd_obj,
       prefix=optz.statsd_metrics_prefix.format(host=os.uname()[1]),
       sampling=sampling, interval=interval, mtype=optz.statsd_type )
@@ -68,7 +68,7 @@ def statsd( host, port=8125, prefix=None,
       ts_chance = (time() - ts_send) / interval
     if not sampling or ts_chance * (val / sampling) > random():
       if prefix: name = prefix + name
-      sock.sendto('{}:{}|{}'.format(name, val, mtype), dst)
+      sock.sendto('{0}:{1}|{2}'.format(name, val, mtype), dst)
       val = 0
       if interval: ts_send = time()
 

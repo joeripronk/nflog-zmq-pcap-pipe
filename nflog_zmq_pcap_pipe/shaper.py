@@ -56,16 +56,16 @@ def compress_pipe(win, lwm, hwm, log, pkt_len_fmt='!I'):
     if win and bs > win:
       ts_now = time()
       rate = bs / (ts_now - ts)
-      # log.debug('Rate: {:.2f} MiB/s'.format(rate / 2**20))
+      # log.debug('Rate: {0:.2f} MiB/s'.format(rate / 2**20))
 
       if hwm and rate > hwm:
         # TODO: send at least some part of them
-        log.warn('Dropping packets due to hwm (rate: {:.2f})'.format(rate / 2**20))
+        log.warn('Dropping packets due to hwm (rate: {0:.2f})'.format(rate / 2**20))
         send = None
       else:
         if send is False: pkt_out = '\x01' + bytes(buff[:bs]) + comp.flush()
         if lwm and rate > lwm:
-          # log.debug( 'lwm reached (rate: {:.2f}),'
+          # log.debug( 'lwm reached (rate: {0:.2f}),'
           #   ' compressing packets'.format(rate / 2**20) )
           comp = compressobj()
           send = False

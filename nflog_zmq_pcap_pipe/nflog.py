@@ -97,7 +97,7 @@ def nflog_generator(qids,
               if err.errno not in ts_err_mask: raise
               result.append(None)
             else: result.append(ts.contents.tv_sec + ts.contents.tv_usec * 1e-6)
-          else: raise NotImplementedError('Unknown nflog attribute: {}'.format(attr))
+          else: raise NotImplementedError('Unknown nflog attribute: {0}'.format(attr))
       _cb_result.append(result)
     except:
       _cb_result.append(StopIteration) # breaks the generator
@@ -142,5 +142,5 @@ if __name__ == '__main__':
   for pkt in src:
     if pkt is None: continue
     pkt, pkt_len, ts = pkt
-    print('Got packet, len: {}, ts: {}'.format(pkt_len, ts))
+    print('Got packet, len: {0}, ts: {1}'.format(pkt_len, ts))
     # print('Payload:', pkt.encode('hex'))
