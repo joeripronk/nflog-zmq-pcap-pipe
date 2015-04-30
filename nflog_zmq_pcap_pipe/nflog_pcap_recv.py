@@ -1,6 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import print_function
+import time,os
+
+def mkdir_p(newdir):
+ if os.path.isdir(newdir):
+   pass
+ elif os.path.isfile(newdir):
+   raise OSError("a file with the same name as the desired " \
+                 "dir, '%s', already exists." % newdir)
+ else:
+   head, tail = os.path.split(newdir)
+   if head and not os.path.isdir(head):
+     mkdir_p(head)
+   if tail:
+     os.mkdir(newdir)
 
 def main():
   import itertools as it, operator as op, functools as ft
@@ -13,6 +27,7 @@ def main():
     description='Receive pcap stream from zeromq and push it to a fifo socket.')
   parser.add_argument('src', help='ZMQ socket address to bind to.')
   parser.add_argument('dst', help='Path to fifo to write stream to.')
+  parser.add_argument('--roll-every', default=0.0,type=float, help='Roll the dump file every n seconds')
   parser.add_argument('--rate-control',
     action='store_true', help='Handle possibly-compressed stream.')
 
@@ -70,7 +85,10 @@ def main():
     buff = None
 
     while True:
-      with open(optz.dst, 'wb', 0) as dst:
+      opentime=time.time()
+      filename=time.strftime(optz.dst,time.gmtime())
+      mkdir_p(os.path.dirname(filename))
+      with open(filename, 'wb', 0) as dst:
         pcap_dst = pcap.writer(dst.write)
         next(pcap_dst)
         log.debug('(Re-)opened destination path')
@@ -109,7 +127,6 @@ def main():
               buff_len += pkt_len
               if bif: bif_tmp.append((pkt_len, pkt))
           except IOError: break
-
           if bif:
             bif_buff.extend(bif_tmp)
             del bif_tmp
@@ -122,7 +139,11 @@ def main():
             statsd.send('raw_out.pkt', len(buff))
             statsd.send('raw_out.bytes', buff_len)
           buff = None
+          if (optz.roll_every and time.time()-opentime>optz.roll_every):
+            dst.close()
+            break
 
+      if optz.roll_every: continue
       if not optz.reopen: break
       sleep(1)
 
